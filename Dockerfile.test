@@ -1,0 +1,7 @@
+FROM eclipse-temurin:17.0.9_9-jdk-focal as build
+
+COPY . /src
+WORKDIR /src
+
+# Run the tests
+RUN ./gradlew test
