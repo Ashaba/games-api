@@ -9,21 +9,20 @@ services:
     ports:
       - '15432:5432'
 
-#  postgres-test:
-#    image: 'postgres:15.5'
-#    environment:
-#      - 'POSTGRES_DB=elevate_test'
-#      - 'POSTGRES_PASSWORD=elevate_test'
-#      - 'POSTGRES_USER=elevate_test'
-#    ports:
-#      - '15432:5432'
-#
-#  app-test:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.test
-#    depends_on:
-#      - postgres-test
+  java:
+    image: 'eclipse-temurin:17.0.9_9-jdk-focal'
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  gradle:
+    image: 'gradle:jdk17-focal'
+    volumes:
+      - .:/home/gradle/project
+      - gradle-cache:/home/gradle/.gradle
+    working_dir: /home/gradle/project
+    command: tail -f /dev/null
+
 #  app:
 #    build: .
 #    environment:
@@ -34,3 +33,5 @@ services:
 #      - postgres
 #    ports:
 #      - "3000:3000"
+volumes:
+  gradle-cache:
