@@ -105,4 +105,14 @@ class GameControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.url", Is.is("URL is required")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.category", Is.is("Category is required")));
     }
+
+    @Test
+    void createGameWithInvalidCategory() throws Exception {
+        String invalidCategoryGameJson = "{\"name\":\"Math\", \"url\":\"https://www.math.com\", \"category\":\"INVALID_CATEGORY\"}";
+
+        mockMvc.perform(post("/api/games").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                        .contentType("application/json")
+                        .content(invalidCategoryGameJson))
+                .andExpect(status().isBadRequest());
+    }
 }

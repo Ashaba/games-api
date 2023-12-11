@@ -1,14 +1,16 @@
 package com.elevate.api.user;
 
+import com.elevate.api.exception.NotFoundException;
+import com.elevate.api.statistics.UserStatsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -22,6 +24,8 @@ class UserServiceTest {
     private UserRepository repository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private UserStatsRepository userStatsRepository;
 
     @InjectMocks
     private UserService userService;
@@ -40,7 +44,6 @@ class UserServiceTest {
 
         verify(repository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
-
 
         Assertions.assertNotNull(savedUser);
         Assertions.assertEquals(savedUser.getPassword(), "encodedPassword");
@@ -73,4 +76,72 @@ class UserServiceTest {
             userService.createUser(user);
         }, "Should throw DataIntegrityViolationException for duplicate username");
     }
+
+    @Test
+    void getCurrentUserAuthenticatedAndFound() {
+        User expectedUser = new User("test.email@elab.com", "testUsername", "User Test", "password");
+        User actualUser;
+
+        try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = Mockito.mockStatic(SecurityContextHolder.class)) {
+            SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+            Authentication authentication = Mockito.mock(Authentication.class);
+
+            mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.isAuthenticated()).thenReturn(true);
+            when(authentication.getName()).thenReturn("testUsername");
+
+            when(repository.findByUsername("testUsername")).thenReturn(Optional.of(expectedUser));
+
+            actualUser = userService.getCurrentUser();
+        }
+
+        Assertions.assertNotNull(actualUser);
+        Assertions.assertEquals(expectedUser.getUsername(), actualUser.getUsername());
+    }
+
+    @Test
+    void getCurrentUserNotAuthenticated() {
+        Exception exception = null;
+
+        try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = Mockito.mockStatic(SecurityContextHolder.class)) {
+            SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+            Authentication authentication = Mockito.mock(Authentication.class);
+
+            mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.isAuthenticated()).thenReturn(false);
+
+            userService.getCurrentUser();
+        } catch (NotFoundException e) {
+            exception = e;
+        }
+
+        Assertions.assertNotNull(exception);
+    }
+
+
+    @Test
+    void getCurrentUserAuthenticatedButNotFound() {
+        Exception exception = null;
+
+        try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = Mockito.mockStatic(SecurityContextHolder.class)) {
+            SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+            Authentication authentication = Mockito.mock(Authentication.class);
+
+            mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.isAuthenticated()).thenReturn(true);
+            when(authentication.getName()).thenReturn("unknownUser");
+
+            when(repository.findByUsername("unknownUser")).thenReturn(Optional.empty());
+
+            userService.getCurrentUser();
+        } catch (NotFoundException e) {
+            exception = e;
+        }
+
+        Assertions.assertNotNull(exception, "Expected NotFoundException to be thrown");
+    }
+
 }

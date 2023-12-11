@@ -2,6 +2,8 @@ package com.elevate.api.event;
 
 import com.elevate.api.game.Game;
 import com.elevate.api.game.GameService;
+import com.elevate.api.user.User;
+import com.elevate.api.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,14 @@ import java.util.Map;
 public class EventController {
 
     private final EventService eventService;
-
     private final GameService gameService;
+    private final UserService userService;
 
     @Autowired
-    public EventController(EventService eventService, GameService gameService) {
+    public EventController(EventService eventService, GameService gameService, UserService userService) {
         this.eventService = eventService;
         this.gameService = gameService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -31,6 +34,8 @@ public class EventController {
         EventDTO eventDTO = payload.get("game_event");
         Game game = gameService.getGameById(eventDTO.getGameId());
         Event event = new Event(eventDTO.getType(), eventDTO.getOccurredAt(), game);
+        User currentUser = userService.getCurrentUser();
+        event.setUser(currentUser);
         return new ResponseEntity<>(eventService.createEvent(event), HttpStatus.CREATED);
     }
 }

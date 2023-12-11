@@ -1,6 +1,9 @@
 package com.elevate.api.event;
 
 import com.elevate.api.game.Game;
+import com.elevate.api.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +22,17 @@ public class Event {
     private String type;
 
     @Column(name = "occurred_at", nullable = false)
+    @JsonProperty("occurred_at")
     private String occurredAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     public Event() {
 

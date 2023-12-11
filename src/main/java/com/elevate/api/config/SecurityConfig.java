@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                     .requestMatchers("/heartbeat").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/sessions").permitAll()
                     .requestMatchers("/api/**").authenticated()

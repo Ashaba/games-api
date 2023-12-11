@@ -5,6 +5,8 @@ import com.elevate.api.exception.NotFoundException;
 import com.elevate.api.game.Game;
 import com.elevate.api.game.GameCategory;
 import com.elevate.api.game.GameService;
+import com.elevate.api.statistics.UserStatsService;
+import com.elevate.api.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,9 +21,12 @@ class EventControllerTest extends BaseControllerTest {
 
     @MockBean
     private EventService service;
-
     @MockBean
     private GameService gameService;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private UserStatsService userStatsService;
 
     @Test
     void createEventUnAuthorized() throws Exception {

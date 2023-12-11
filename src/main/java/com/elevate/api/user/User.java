@@ -1,15 +1,14 @@
 package com.elevate.api.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -18,10 +17,8 @@ import java.util.UUID;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @GenericGenerator(name = "uuid", type = org.hibernate.id.uuid.UuidGenerator.class)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Email(message = "Invalid Email Address")
     @NotBlank(message = "Email is required")
@@ -32,8 +29,9 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @NotBlank(message = "Full name is required")
+    @NotBlank(message = "full_name is required")
     @Column(name = "full_name", nullable = false)
+    @JsonProperty("full_name")
     private String fullName;
 
     @NotBlank(message = "Password is required")

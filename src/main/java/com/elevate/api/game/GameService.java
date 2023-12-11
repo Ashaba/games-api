@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class GameService {
+    private static final String TAG = "GameService";
     Logger logger = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository repository;
@@ -25,7 +26,7 @@ public class GameService {
         try {
             return repository.save(game);
         } catch (Exception e) {
-            logger.info("Error creating game: " + e.getMessage());
+            logger.info(TAG + " Error creating game: " + e.getMessage());
             return null;
         }
     }

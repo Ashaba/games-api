@@ -1,5 +1,6 @@
 package com.elevate.api.game;
 
+import com.elevate.api.validators.ValueOfEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
