@@ -10,12 +10,6 @@ import org.testcontainers.utility.DockerImageName;
 @TestConfiguration(proxyBeanMethods = false)
 public class TestElevateApiApplication {
 
-    @Bean
-    @ServiceConnection
-    PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:15.5"));
-    }
-
     public static void main(String[] args) {
         SpringApplication.from(ElevateApiApplication::main).with(TestElevateApiApplication.class).run(args);
     }

@@ -9,29 +9,29 @@ services:
     ports:
       - '15432:5432'
 
-  java:
-    image: 'eclipse-temurin:17.0.9_9-jdk-focal'
-    volumes:
-      - .:/app
-    working_dir: /app
+  postgres-test:
+    image: 'postgres:15.5'
+    environment:
+      - 'POSTGRES_DB=elevate-test'
+      - 'POSTGRES_PASSWORD=elevate-test'
+      - 'POSTGRES_USER=elevate-test'
+    ports:
+      - '15433:5432'
 
-  gradle:
-    image: 'gradle:jdk17-focal'
-    volumes:
-      - .:/home/gradle/project
-      - gradle-cache:/home/gradle/.gradle
-    working_dir: /home/gradle/project
-    command: tail -f /dev/null
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - postgres-test
 
-#  app:
-#    build: .
-#    environment:
-#      JDBC_DATABASE_URL: 'jdbc:postgresql://postgres:5432/elevate'
-#      JDBC_DATABASE_USERNAME: elevate
-#      JDBC_DATABASE_PASSWORD: elevate
-#    depends_on:
-#      - postgres
-#    ports:
-#      - "3000:3000"
-volumes:
-  gradle-cache:
+  app:
+    build: .
+    environment:
+      JDBC_DATABASE_URL: 'jdbc:postgresql://postgres:5432/elevate'
+      JDBC_DATABASE_USERNAME: elevate
+      JDBC_DATABASE_PASSWORD: elevate
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"

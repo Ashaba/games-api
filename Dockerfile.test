@@ -1,7 +1,8 @@
-FROM eclipse-temurin:17.0.9_9-jdk-focal as build
+# Dockerfile.test
+FROM eclipse-temurin:17.0.9_9-jdk-focal
+COPY . /app
+WORKDIR /app
+RUN ./gradlew build -x test # Build without running tests
 
-COPY . /src
-WORKDIR /src
-
-# Run the tests
-RUN ./gradlew test
+# Define the command to run tests when the container starts
+CMD ["./gradlew", "test"]

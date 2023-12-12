@@ -30,7 +30,7 @@ class UserControllerTest extends BaseControllerTest {
     @MockBean
     private AuthService authService;
 
-    @Mock
+    @MockBean
     private UserStatsService userStatsService;
 
     @Test
