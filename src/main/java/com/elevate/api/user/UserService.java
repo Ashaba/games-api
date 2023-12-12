@@ -1,5 +1,6 @@
 package com.elevate.api.user;
 
+import com.elevate.api.exception.DataConflictException;
 import com.elevate.api.exception.NotFoundException;
 import com.elevate.api.statistics.UserStats;
 import com.elevate.api.statistics.UserStatsRepository;
@@ -32,11 +33,11 @@ public class UserService {
     public User createUser(User user) {
         if (emailExists(user.getEmail())) {
             logger.info(TAG + " - createUser: Email already exists for user " + user.getEmail());
-            throw new DataIntegrityViolationException("Email already exists");
+            throw new DataConflictException("Email already exists");
         }
         if (usernameExists(user.getUsername())) {
             logger.info(TAG + " - createUser: Username already exists for user " + user.getUsername());
-            throw new DataIntegrityViolationException("Username already exists");
+            throw new DataConflictException("Username already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = repository.save(user);

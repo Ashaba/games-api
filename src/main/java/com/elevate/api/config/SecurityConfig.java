@@ -30,19 +30,18 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authEntryPoint))
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionFixation().none())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    .requestMatchers("/heartbeat").permitAll()
+                        .requestMatchers("/heartbeat").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/sessions").permitAll()
-                    .requestMatchers("/api/**").authenticated()
-        ).addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers("/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/sessions").permitAll()
+                        .requestMatchers("/api/**").authenticated())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
