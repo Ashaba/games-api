@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -33,7 +35,8 @@ public class EventController {
     public ResponseEntity<Event> createEvent(@RequestBody Map<String, EventDTO> payload) {
         EventDTO eventDTO = payload.get("game_event");
         Game game = gameService.getGameById(eventDTO.getGameId());
-        Event event = new Event(eventDTO.getType(), eventDTO.getOccurredAt(), game);
+
+        Event event = new Event(eventDTO.getType(), eventDTO.getOccurredAt(), game, ZonedDateTime.now());
         User currentUser = userService.getCurrentUser();
         event.setUser(currentUser);
         return new ResponseEntity<>(eventService.createEvent(event), HttpStatus.CREATED);

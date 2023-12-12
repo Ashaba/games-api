@@ -9,33 +9,33 @@ services:
     ports:
       - '15432:5432'
 
-#  postgres-test:
-#    image: 'postgres:15.5'
-#    environment:
-#      - 'POSTGRES_DB=elevate-test'
-#      - 'POSTGRES_PASSWORD=elevate-test'
-#      - 'POSTGRES_USER=elevate-test'
-#    ports:
-#      - '15433:5432'
-#
-#  app-test:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.test
-#    environment:
-#      JDBC_DATABASE_URL_TEST: 'jdbc:postgresql://postgres-test:5432/elevate-test'
-#      JDBC_DATABASE_USERNAME_TEST: 'elevate-test'
-#      JDBC_DATABASE_PASSWORD_TEST: 'elevate-test'
-#    depends_on:
-#      - postgres-test
-#
-#  app:
-#    build: .
-#    environment:
-#      JDBC_DATABASE_URL: 'jdbc:postgresql://postgres:5432/elevate'
-#      JDBC_DATABASE_USERNAME: 'elevate'
-#      JDBC_DATABASE_PASSWORD: 'elevate'
-#    depends_on:
-#      - postgres
-#    ports:
-#      - "3000:3000"
+  postgres-test:
+    image: 'postgres:15.5'
+    environment:
+      - 'POSTGRES_DB=elevate-test'
+      - 'POSTGRES_PASSWORD=elevate-test'
+      - 'POSTGRES_USER=elevate-test'
+    ports:
+      - '15433:5432'
+
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      JDBC_DATABASE_URL_TEST: 'jdbc:postgresql://postgres-test:5432/elevate-test'
+      JDBC_DATABASE_USERNAME_TEST: 'elevate-test'
+      JDBC_DATABASE_PASSWORD_TEST: 'elevate-test'
+    depends_on:
+      - postgres-test
+
+  app:
+    build: .
+    environment:
+      JDBC_DATABASE_URL: 'jdbc:postgresql://postgres:5432/elevate'
+      JDBC_DATABASE_USERNAME: 'elevate'
+      JDBC_DATABASE_PASSWORD: 'elevate'
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"

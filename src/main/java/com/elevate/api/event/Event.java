@@ -29,8 +29,11 @@ public class Event {
      */
     @Column(name = "occurred_at", nullable = false)
     @JsonProperty("occurred_at")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private ZonedDateTime occurredAt;
+    private String occurredAt;
+
+    @Column(name = "created_at", nullable = false)
+    @JsonIgnore
+    private ZonedDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
@@ -45,9 +48,10 @@ public class Event {
 
     }
 
-    public Event(String type, ZonedDateTime occurredAt, Game game) {
+    public Event(String type, String occurredAt, Game game, ZonedDateTime createdAt) {
         this.type = type;
         this.occurredAt = occurredAt;
         this.game = game;
+        this.createdAt = createdAt;
     }
 }

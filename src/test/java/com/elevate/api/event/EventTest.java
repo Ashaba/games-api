@@ -16,7 +16,7 @@ class EventTest {
     void setUp() {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
-        event = new Event("Game Started",zonedDateTime , null);
+        event = new Event("Game Started",occurredAt, null , zonedDateTime);
     }
 
     @Test
@@ -26,7 +26,7 @@ class EventTest {
 
     @Test
     void getOccurredAt() {
-        Assertions.assertEquals(event.getOccurredAt(), zonedDateTime);
+        Assertions.assertEquals(event.getOccurredAt(), "2023-12-10T15:30:00+02:00");
     }
 
     @Test
@@ -44,8 +44,8 @@ class EventTest {
     void setOccurredAt() {
         String updatedOccurredAt = "2024-12-10T15:30:00+02:00";
         zonedDateTime = ZonedDateTime.parse(updatedOccurredAt, DateTimeFormatter.ISO_DATE_TIME);
-        event.setOccurredAt(zonedDateTime);
-        Assertions.assertEquals(event.getOccurredAt(), zonedDateTime);
+        event.setOccurredAt(updatedOccurredAt);
+        Assertions.assertEquals(event.getOccurredAt(), updatedOccurredAt);
     }
 
     @Test

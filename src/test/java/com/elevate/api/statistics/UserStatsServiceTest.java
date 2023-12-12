@@ -12,7 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +52,7 @@ class UserStatsServiceTest {
         User user = new User();
         user.setId(userId);
         Game game = new Game("Test Game", "http://test.com", GameCategory.MATH);
-        Event event = new Event("completed", ZonedDateTime.now(), game);
+        Event event = new Event("completed", "12:15", game, ZonedDateTime.now());
         event.setUser(user);
 
         UserStats userStats = new UserStats();
@@ -58,5 +62,63 @@ class UserStatsServiceTest {
 
         verify(userStatsRepository).findById(userId);
         verify(userStatsRepository).save(any(UserStats.class));
+    }
+
+    @Test
+    void calculateCurrentStreakWithNoEventsShouldReturnZero() {
+        Long userId = 1L;
+        when(eventRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(Collections.emptyList());
+
+        int streak = userStatsService.calculateCurrentStreak(userId);
+
+        Assertions.assertEquals(0, streak);
+    }
+
+    @Test
+    void calculateCurrentStreakWithConsecutiveDaysShouldReturnCorrectStreak() {
+        Long userId = 1L;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        List<Event> events = Arrays.asList(
+                new Event("type", "occurredAt", null, now),
+                new Event("type", "occurredAt", null, now.minusDays(1)),
+                new Event("type", "occurredAt", null, now.minusDays(2))
+        );
+        when(eventRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(events);
+
+        int streak = userStatsService.calculateCurrentStreak(userId);
+
+        Assertions.assertEquals(3, streak);
+    }
+
+    @Test
+    void calculateCurrentStreakWithNonConsecutiveDaysShouldReturnShorterStreak() {
+        Long userId = 1L;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        List<Event> events = Arrays.asList(
+                new Event("type", "occurredAt", null, now),
+                new Event("type", "occurredAt", null, now.minusDays(2)),
+                new Event("type", "occurredAt", null, now.minusDays(3))
+        );
+        when(eventRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(events);
+
+        int streak = userStatsService.calculateCurrentStreak(userId);
+
+        Assertions.assertEquals(1, streak);
+    }
+
+    @Test
+    void calculateCurrentStreakWithEventsHavingGapsShouldReturnCorrectStreak() {
+        Long userId = 1L;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        List<Event> events = Arrays.asList(
+                new Event("type", "occurredAt", null, now),
+                new Event("type", "occurredAt", null, now.minusDays(1)),
+                new Event("type", "occurredAt", null, now.minusDays(3))
+        );
+        when(eventRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(events);
+
+        int streak = userStatsService.calculateCurrentStreak(userId);
+
+        Assertions.assertEquals(2, streak);
     }
 }

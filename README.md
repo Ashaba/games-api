@@ -104,11 +104,12 @@ Returns the user details
     "email": "user@username.com",
     "full_name": "User",
     "stats": {
-        "total_games_played": 2,
-        "total_math_games_played": 1,
+        "total_games_played": 1,
+        "total_math_games_played": 0,
         "total_reading_games_played": 1,
         "total_speaking_games_played": 0,
-        "total_writing_games_played": 0
+        "total_writing_games_played": 0,
+        "current_streak_in_days": 1
     }
 }
 ```

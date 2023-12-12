@@ -32,7 +32,7 @@ class EventServiceTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, new Game());
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         when(repository.save(Mockito.any(Event.class))).thenReturn(event);
 
         Event createdEvent = service.createEvent(event);
@@ -50,7 +50,7 @@ class EventServiceTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, new Game());
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         when(repository.save(Mockito.any(Event.class))).thenReturn(event);
 
         Event createdEvent = service.createEvent(event);
@@ -68,7 +68,7 @@ class EventServiceTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, new Game());
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         when(repository.save(Mockito.any(Event.class))).thenReturn(null);
 
         Event createdEvent = service.createEvent(event);

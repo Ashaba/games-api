@@ -36,7 +36,7 @@ class EventControllerTest extends BaseControllerTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, new Game());
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 
         String jsonPayload = String.format("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"%s\", \"game_id\": 1}}", occurredAt);
@@ -55,7 +55,7 @@ class EventControllerTest extends BaseControllerTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, game);
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         given(gameService.getGameById(gameId)).willReturn(game);
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 
@@ -76,7 +76,7 @@ class EventControllerTest extends BaseControllerTest {
         String occurredAt = "2023-12-10T15:30:00+02:00";
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
 
-        Event event = new Event("occurred", zonedDateTime, game);
+        Event event = new Event("occurred", occurredAt, new Game(), zonedDateTime);
         given(gameService.getGameById(gameId)).willThrow(NotFoundException.class);
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 

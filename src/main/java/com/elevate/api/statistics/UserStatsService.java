@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -49,22 +50,27 @@ public class UserStatsService {
         userStatsRepository.save(userStats);
     }
 
-    private int calculateCurrentStreak(Long userId) {
-        List<Event> events = eventRepository.findByUserIdOrderByOccurredAtDesc(userId);
+    public int calculateCurrentStreak(Long userId) {
+        List<Event> events = eventRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
         if (events.isEmpty()) {
             return 0;
         }
+
         int currentStreak = 0;
-        LocalDate lastDate = LocalDate.now();
+        LocalDate lastDate = LocalDate.now(ZoneId.of("UTC"));
+
         for (Event event : events) {
-            LocalDate eventDate = event.getOccurredAt().toLocalDate();
-            if (eventDate.isEqual(lastDate.minusDays(1))) {
+            LocalDate eventDate = event.getCreatedAt().toLocalDate();
+
+            if (eventDate.isEqual(lastDate) || eventDate.isEqual(lastDate.minusDays(1))) {
                 currentStreak++;
+                lastDate = eventDate;
             } else {
                 break;
             }
-            lastDate = eventDate;
         }
+
         return currentStreak;
     }
 }
