@@ -22,6 +22,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
+    environment:
+      JDBC_DATABASE_URL_TEST: 'jdbc:postgresql://postgres-test:5432/elevate-test'
+      JDBC_DATABASE_USERNAME_TEST: 'elevate-test'
+      JDBC_DATABASE_PASSWORD_TEST: 'elevate-test'
     depends_on:
       - postgres-test
 
@@ -29,8 +33,8 @@ services:
     build: .
     environment:
       JDBC_DATABASE_URL: 'jdbc:postgresql://postgres:5432/elevate'
-      JDBC_DATABASE_USERNAME: elevate
-      JDBC_DATABASE_PASSWORD: elevate
+      JDBC_DATABASE_USERNAME: 'elevate'
+      JDBC_DATABASE_PASSWORD: 'elevate'
     depends_on:
       - postgres
     ports:

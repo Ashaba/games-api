@@ -5,17 +5,6 @@
 ### Requirements
 - Docker
 
-## Running tests
-`docker compose up --build app-test`
-
-This outputs test results in the console, and also generates a test report. Given this is running in the container, 
-I have left out the part to extract the coverage report at this point. But normally you would get this from the `build/jacocoHtml` folder.
-```agsl
-elevate-api-app-test-1  |
-elevate-api-app-test-1  | BUILD SUCCESSFUL in 1m 22s
-elevate-api-app-test-1  | 6 actionable tasks: 4 executed, 2 up-to-date
-```
-
 ## Running the application
 For simplicity, I have included all the configs/variables to get the application running, including database connection 
 details, in the `docker-compose.yml` file. This is not ideal for production, but should get this app running.
@@ -31,3 +20,14 @@ elevate-api-app-1       | 2023-12-11T19:04:19.423Z  INFO 1 --- [nio-3000-exec-1]
 elevate-api-app-1       | 2023-12-11T19:04:19.427Z  INFO 1 --- [nio-3000-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
 ```
 You can verify by hitting the heartbeat endpoint at `http://localhost:3000/heartbeat`
+
+## Running tests
+`docker compose up --build app-test`
+
+This outputs test results in the console, and also generates a test report. Given this is running in the container,
+I have left out the part to extract the coverage report at this point. But normally you would get this from the `build/jacocoHtml` folder.
+```agsl
+elevate-api-app-test-1  |
+elevate-api-app-test-1  | BUILD SUCCESSFUL in 1m 22s
+elevate-api-app-test-1  | 6 actionable tasks: 4 executed, 2 up-to-date
+```
