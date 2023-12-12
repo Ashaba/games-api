@@ -6,12 +6,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 class EventTest {
     Event event;
-
+    ZonedDateTime zonedDateTime;
     @BeforeEach
     void setUp() {
-        event = new Event("Game Started", "2021-09-01 12:00:00", null);
+        String occurredAt = "2023-12-10T15:30:00+02:00";
+        zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
+        event = new Event("Game Started",zonedDateTime , null);
     }
 
     @Test
@@ -21,7 +26,7 @@ class EventTest {
 
     @Test
     void getOccurredAt() {
-        Assertions.assertEquals(event.getOccurredAt(), "2021-09-01 12:00:00");
+        Assertions.assertEquals(event.getOccurredAt(), zonedDateTime);
     }
 
     @Test
@@ -37,8 +42,10 @@ class EventTest {
 
     @Test
     void setOccurredAt() {
-        event.setOccurredAt("2021-09-01 12:00:01");
-        Assertions.assertEquals(event.getOccurredAt(), "2021-09-01 12:00:01");
+        String updatedOccurredAt = "2024-12-10T15:30:00+02:00";
+        zonedDateTime = ZonedDateTime.parse(updatedOccurredAt, DateTimeFormatter.ISO_DATE_TIME);
+        event.setOccurredAt(zonedDateTime);
+        Assertions.assertEquals(event.getOccurredAt(), zonedDateTime);
     }
 
     @Test

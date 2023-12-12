@@ -1,13 +1,11 @@
 # Spring Boot Application for the Games API
 
-## Local setup
-
-### Requirements
-- Docker
-
-## Running the application
+## Requirements to setup and run the application locally
+- Git clone the repo
+- Docker, have docker up and running before attempting to run the application/tests.
+### Running the application
 For simplicity, I have included all the configs/variables to get the application running, including database connection 
-details, in the `docker-compose.yml` file. This is not ideal for production, but should get this app running.
+details, in the `docker-compose.yml` file.
 
 `docker compose up --build app`
 

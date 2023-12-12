@@ -13,6 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,12 +33,16 @@ class EventControllerTest extends BaseControllerTest {
 
     @Test
     void createEventUnAuthorized() throws Exception {
-        Event event = new Event("occurred", "12:00pm", new Game());
+        String occurredAt = "2023-12-10T15:30:00+02:00";
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
+
+        Event event = new Event("occurred", zonedDateTime, new Game());
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 
+        String jsonPayload = String.format("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"%s\", \"game_id\": 1}}", occurredAt);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/game_events")
                         .contentType("application/json")
-                        .content("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"12:00pm\", \"game_id\": 1}}"))
+                        .content(jsonPayload))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -45,13 +52,18 @@ class EventControllerTest extends BaseControllerTest {
         Game game = new Game("Name", "https://example.com", GameCategory.MATH);
         game.setId(gameId);
 
-        Event event = new Event("occurred", "12:00pm", game);
+        String occurredAt = "2023-12-10T15:30:00+02:00";
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
+
+        Event event = new Event("occurred", zonedDateTime, game);
         given(gameService.getGameById(gameId)).willReturn(game);
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 
+        String jsonPayload = String.format("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"%s\", \"game_id\": 1}}", occurredAt);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/game_events").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                 .contentType("application/json")
-                .content("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"12:00pm\", \"game_id\": 1}}"))
+                .content(jsonPayload))
                 .andExpect(status().isCreated());
     }
 
@@ -61,13 +73,18 @@ class EventControllerTest extends BaseControllerTest {
         Game game = new Game("Name", "https://example.com", GameCategory.MATH);
         game.setId(gameId);
 
-        Event event = new Event("occurred", "12:00pm", game);
+        String occurredAt = "2023-12-10T15:30:00+02:00";
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(occurredAt, DateTimeFormatter.ISO_DATE_TIME);
+
+        Event event = new Event("occurred", zonedDateTime, game);
         given(gameService.getGameById(gameId)).willThrow(NotFoundException.class);
         given(service.createEvent(Mockito.any(Event.class))).willReturn(event);
 
+        String jsonPayload = String.format("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"%s\", \"game_id\": 1}}", occurredAt);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/game_events").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_USER")))
                 .contentType("application/json")
-                .content("{\"game_event\": {\"type\": \"occurred\", \"occurred_at\": \"12:00pm\", \"game_id\": 1}}"))
+                .content(jsonPayload))
                 .andExpect(status().isNotFound());
     }
 }

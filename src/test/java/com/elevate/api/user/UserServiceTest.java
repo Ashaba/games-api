@@ -1,5 +1,6 @@
 package com.elevate.api.user;
 
+import com.elevate.api.exception.DataConflictException;
 import com.elevate.api.exception.NotFoundException;
 import com.elevate.api.statistics.UserStatsRepository;
 import org.junit.jupiter.api.Assertions;
@@ -60,9 +61,9 @@ class UserServiceTest {
 
         when(repository.findByEmail(user.getEmail())).thenReturn(Optional.of(new User()));
 
-        Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
+        Assertions.assertThrows(DataConflictException.class, () -> {
             userService.createUser(user);
-        }, "Should throw DataIntegrityViolationException for duplicate email");
+        }, "Should throw DataConflictException for duplicate email");
     }
 
     @Test
@@ -72,9 +73,9 @@ class UserServiceTest {
 
         when(repository.findByUsername(user.getUsername())).thenReturn(Optional.of(new User()));
 
-        Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
+        Assertions.assertThrows(DataConflictException.class, () -> {
             userService.createUser(user);
-        }, "Should throw DataIntegrityViolationException for duplicate username");
+        }, "Should throw DataConflictException for duplicate username");
     }
 
     @Test

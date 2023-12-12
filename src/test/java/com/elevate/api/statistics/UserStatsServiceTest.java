@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +48,7 @@ class UserStatsServiceTest {
         User user = new User();
         user.setId(userId);
         Game game = new Game("Test Game", "http://test.com", GameCategory.MATH);
-        Event event = new Event("completed", "2021-01-01", game);
+        Event event = new Event("completed", ZonedDateTime.now(), game);
         event.setUser(user);
 
         UserStats userStats = new UserStats();

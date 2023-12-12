@@ -5,6 +5,9 @@ import com.elevate.api.event.EventRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 public class UserStatsService {
 
@@ -47,6 +50,21 @@ public class UserStatsService {
     }
 
     private int calculateCurrentStreak(Long userId) {
-        return 0;
+        List<Event> events = eventRepository.findByUserIdOrderByOccurredAtDesc(userId);
+        if (events.isEmpty()) {
+            return 0;
+        }
+        int currentStreak = 0;
+        LocalDate lastDate = LocalDate.now();
+        for (Event event : events) {
+            LocalDate eventDate = event.getOccurredAt().toLocalDate();
+            if (eventDate.isEqual(lastDate.minusDays(1))) {
+                currentStreak++;
+            } else {
+                break;
+            }
+            lastDate = eventDate;
+        }
+        return currentStreak;
     }
 }

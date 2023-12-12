@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
 public class EventDTO implements Serializable {
     private String type;
     @JsonProperty("occurred_at")
-    private String occurredAt;
+    private ZonedDateTime occurredAt;
     @JsonProperty("game_id")
     private Long gameId;
 }
