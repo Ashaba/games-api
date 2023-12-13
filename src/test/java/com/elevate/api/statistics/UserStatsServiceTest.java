@@ -121,4 +121,20 @@ class UserStatsServiceTest {
 
         Assertions.assertEquals(2, streak);
     }
+
+    @Test
+    void calculateCurrentStreakWithMultipleEventsSameDayShouldCountAsOneDay() {
+        Long userId = 1L;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        List<Event> events = Arrays.asList(
+                new Event("type", "occurredAt", null, now),
+                new Event("type", "occurredAt", null, now.minusHours(2)),
+                new Event("type", "occurredAt", null, now.minusDays(1))
+        );
+        when(eventRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(events);
+
+        int streak = userStatsService.calculateCurrentStreak(userId);
+
+        Assertions.assertEquals(2, streak);
+    }
 }
